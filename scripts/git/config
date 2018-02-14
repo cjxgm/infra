@@ -1,0 +1,12 @@
+# vim: ft=gitconfig ts=4 sw=4 sts=4 et
+
+[diff "secret"]
+    textconv = scripts/secret/crypt secret.pem secret.key -d -in
+
+[filter "secret"]
+    smudge = scripts/secret/crypt secret.pem secret.key -d
+    clean = scripts/secret/crypt secret.pem secret.key
+
+[merge]
+    renormalize = true
+

@@ -20,6 +20,23 @@ rebuild:
 	@$(MAKE) clean
 	@$(MAKE) all
 
+.PHONY: setup unsetup recheckout update-key
+setup: secret.key secret.pem unsetup
+	git config --add include.path $(shell git rev-parse --show-toplevel)/scripts/git/config
+	@$(MAKE) recheckout
+unsetup:
+	git config --unset-all include.path $(shell git rev-parse --show-toplevel)/scripts/git/config || test $$? -eq 5
+	@$(MAKE) recheckout
+recheckout:
+	rm -f $(shell git rev-parse --git-path index)
+	git checkout HEAD -- .
+secret.key:
+	@$(MAKE) update-key
+update-key: secret.pem
+	openssl rand 256 | openssl pkeyutl -encrypt -inkey $< | openssl base64 -out secret.key
+secret.pem:
+	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 > $@
+
 build/repo/infra.db.tar.xz: $(PKGBUILDs) | build/repo/
 	rm -f $@
 	$(MAKE) $(_dirty_makepkg_targets)
