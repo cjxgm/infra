@@ -1,0 +1,23 @@
+language: generic
+
+services:
+    - docker
+
+before_install:
+    - docker pull base/devel
+
+    # Boot up systemd
+    - docker run
+        --detach
+        --privileged
+        -v /sys/fs/cgroup:/sys/fs/cgroup
+        -v $PWD:/source
+        base/devel /usr/lib/systemd/systemd
+        > /tmp/container
+
+    # Wait systemd and DBus server to come up
+    - docker exec $(</tmp/container) busctl --watch-bind=1
+
+script:
+    - docker exec $(</tmp/container) make -j8 -C /source
+
