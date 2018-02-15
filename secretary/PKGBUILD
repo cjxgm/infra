@@ -1,0 +1,24 @@
+# vim: ts=4 sw=4 sts=4 et
+# Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
+pkgname=infra-secretary
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Secret manager with a decryption key"
+arch=(any)
+license=('GPL3')
+groups=(infra)
+depends=(openssl infra-private-key)
+source=(
+    "decrypt"
+)
+sha512sums=(
+    SKIP
+)
+
+package()
+{
+    install -Dm 755 "$srcdir/decrypt" "$pkgdir/usr/lib/infra/secretary/decrypt"
+    install -Dm 755 "/source/scripts/secret/crypt" "$pkgdir/usr/lib/infra/secretary/crypt"
+    install -Dm 644 "/source/secret.key" "$pkgdir/usr/lib/infra/secretary/secret.key"
+}
+
