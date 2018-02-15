@@ -48,6 +48,10 @@ makepkg-%: %/PKGBUILD | build/repo/ build/downloads/ build/cache/
 		--pipe \
 		-p DynamicUser=1 \
 		-p User=nobody \
+		-p PrivateDevices=1 \
+		-p ProtectKernelTunables=1 \
+		-p ProtectKernelModules=1 \
+		-p ProtectControlGroups=1 \
 		-p BindPaths=$(build_path):/build \
 		-p BindReadOnlyPaths=$(abspath .):/source \
 		-p WorkingDirectory=/source/$* \
