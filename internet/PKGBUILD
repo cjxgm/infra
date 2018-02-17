@@ -1,0 +1,27 @@
+# vim: ts=4 sw=4 sts=4 et
+# Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
+pkgname=infra-internet
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Provide access to THE internet."
+arch=(any)
+license=('GPL3')
+groups=(infra)
+depends=(infra-secretary infra-optimization shadowsocks-libev)
+source=(
+    secret-internet.json
+    internet.service
+)
+sha512sums=(
+    SKIP
+    SKIP
+)
+
+package()
+{
+    install -Dm 644 "$srcdir/secret-internet.json" "$pkgdir/usr/lib/infra/internet/secret-internet.json"
+    install -Dm 644 "$srcdir/internet.service" "$pkgdir/usr/lib/systemd/system/infra-internet.service"
+    install -d "$pkgdir/usr/lib/systemd/system/multi-user.target.wants"
+    ln -s "/usr/lib/systemd/system/infra-internet.service" "$pkgdir/usr/lib/systemd/system/multi-user.target.wants/"
+}
+
