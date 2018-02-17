@@ -1,0 +1,22 @@
+# vim: ts=4 sw=4 sts=4 et
+# Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
+pkgname=infra-optimization
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="System optimization configurations"
+arch=(any)
+license=('GPL3')
+groups=(infra)
+depends=()
+source=(
+    bbr.conf
+)
+sha512sums=(
+    SKIP
+)
+
+package()
+{
+    install -Dm 644 "$srcdir/bbr.conf" "$pkgdir/usr/lib/sysctl.d/99-infra-bbr.conf"
+}
+
