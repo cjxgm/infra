@@ -1,0 +1,12 @@
+[Unit]
+Description=Socket for THE internet service provider
+
+[Socket]
+ListenStream=[removed]
+TCPCongestion=bbr
+
+[Install]
+WantedBy=sockets.target
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+

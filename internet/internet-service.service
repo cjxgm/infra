@@ -1,0 +1,10 @@
+[Unit]
+Description=THE internet service provider
+
+[Service]
+DynamicUser=true
+ExecStartPre=!/usr/lib/infra/secretary/decrypt /usr/lib/infra/internet/secret-password.json /tmp/password.json
+ExecStart=/usr/bin/ss-server -s 127.0.0.1 -p 60181 -t 1000 -m aes-256-cfb -c /tmp/password.json
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+
