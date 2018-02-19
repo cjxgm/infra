@@ -1,5 +1,5 @@
 # infra: Arch Linux servers automation infrastructure for cjprods.org
-[![Build Status](https://travis-ci.org/cjxgm/infra.svg?branch=master)](https://travis-ci.org/cjxgm/infra)
+[![Travis Build Status](https://img.shields.io/travis/cjxgm/infra.svg?style=for-the-badge&logo=travis&maxAge=5)](https://travis-ci.org/cjxgm/infra)
 
 The goal is to automate the management of servers at [cjprods.org](https://cjprods.org).
 
