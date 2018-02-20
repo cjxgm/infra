@@ -1,13 +1,18 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-internet
-pkgver=0.5.0
+pkgver=0.6.0
 pkgrel=1
 pkgdesc="Provide access to THE internet."
 arch=(any)
 license=('GPL3')
 groups=(infra)
-depends=(infra-secretary infra-daemon-reload shadowsocks-libev)
+depends=(
+    infra-secretary
+    infra-private-key
+    infra-daemon-reload
+    shadowsocks-libev
+)
 source=(
     secret-password.json
     internet-service.service
