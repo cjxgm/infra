@@ -1,0 +1,12 @@
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = infra-internet
+
+[Action]
+Description = Restarting socket for THE internet access provider...
+When = PostTransaction
+Exec = /usr/bin/systemctl restart infra-internet.socket
+Depends = infra-optimization
+

@@ -1,20 +1,24 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-internet
-pkgver=0.3.0
-pkgrel=2
+pkgver=0.4.0
+pkgrel=1
 pkgdesc="Provide access to THE internet."
 arch=(any)
 license=('GPL3')
 groups=(infra)
-depends=(infra-secretary shadowsocks-libev)
+depends=(infra-secretary infra-optimization shadowsocks-libev)
 source=(
     secret-password.json
     internet-service.service
     internet.service
     internet.socket
+    restart-internet.hook
+    stop-internet.hook
 )
 sha512sums=(
+    SKIP
+    SKIP
     SKIP
     SKIP
     SKIP
@@ -30,5 +34,9 @@ package()
     _systemd__install_unit internet.service
     _systemd__install_unit internet.socket
     _systemd__enable_unit internet.socket sockets.target
+
+    source /source/scripts/pkgbuild/pacman.sh
+    _pacman__install_hook restart-internet.hook
+    _pacman__install_hook stop-internet.hook
 }
 
