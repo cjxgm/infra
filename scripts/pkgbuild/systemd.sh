@@ -11,6 +11,9 @@ _systemd__install_unit()
 # USAGE: _systemd__enable_unit name.type target
 #   Enable the systemd unit file infra-${name.type}
 #   as a Wants dependency of $target
+# USAGE: _systemd__enable_unit name@instance.type target
+#   Enable the systemd unit file infra-${name@instance.type}
+#   to infra-${name@.type} as a Wants dependency of $target
 _systemd__enable_unit()
 {
     local unit="$1"
@@ -18,8 +21,19 @@ _systemd__enable_unit()
     [[ -z $unit ]] && return 1
     [[ -z $target ]] && return 1
 
+    local source_unit
+    if [[ $unit == *@*.* ]]; then
+        source_unit="$(perl -pe 's{^([^@]+\@).*(\.[^.]+)$}{$1$2}' <<< "$unit")"
+    elif [[ $unit == *.* ]]; then
+        source_unit="$unit"
+    else
+        echo >&2 "Invalid unit name: $unit"
+        return 1
+    fi
+
     install -d "$pkgdir/usr/lib/systemd/system/$target.wants"
-    ln -s "/usr/lib/systemd/system/infra-$unit" "$pkgdir/usr/lib/systemd/system/$target.wants/infra-$unit"
+    ln -s "/usr/lib/systemd/system/infra-$source_unit" \
+        "$pkgdir/usr/lib/systemd/system/$target.wants/infra-$unit"
 }
 
 # USAGE: _systemd__install_generator name

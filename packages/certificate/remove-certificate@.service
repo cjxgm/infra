@@ -1,0 +1,19 @@
+[Unit]
+Description=Remove certificate for %I
+Conflicts=infra-certificate@%i.service
+Conflicts=infra-certificate@%i.timer
+
+[Service]
+Type=oneshot
+DynamicUser=true
+User=infra-certificate
+StateDirectory=infra/certificate
+ExecStart=/usr/bin/certbot \
+    --config-dir /var/lib/infra/certificate \
+    --logs-dir /tmp \
+    --work-dir /tmp \
+    delete --cert-name %I
+ExecStartPost=/usr/bin/chmod o=rX -R /var/lib/infra/certificate
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+

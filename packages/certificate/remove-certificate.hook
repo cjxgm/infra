@@ -1,0 +1,12 @@
+[Trigger]
+Type = File
+Operation = Remove
+Target = usr/lib/systemd/system/timers.target.wants/infra-certificate@*.timer
+
+[Action]
+Description = Removing excessive certificates...
+When = PostTransaction
+Exec = /usr/bin/bash -c 'while read -r f; do f="$(basename "$f" .timer).service"; f="infra-remove-${f:6}"; /usr/bin/systemctl start "$f"; done'
+NeedsTargets
+Depends = systemd
+

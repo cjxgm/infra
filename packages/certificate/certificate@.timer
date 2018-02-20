@@ -1,0 +1,13 @@
+[Unit]
+Description=Twice daily certificate renewal for %I
+
+[Timer]
+Persistent=true
+OnCalendar=00:00
+OnCalendar=12:00
+
+[Install]
+WantedBy=timers.target
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+

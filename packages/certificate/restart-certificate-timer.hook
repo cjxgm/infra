@@ -1,0 +1,15 @@
+[Trigger]
+Type = File
+Operation = Install
+Operation = Upgrade
+Target = usr/lib/systemd/system/timers.target.wants/infra-certificate@*.timer
+
+[Action]
+Description = Restarting certificates renewal timer...
+When = PostTransaction
+Exec = /usr/bin/bash -c 'while read -r f; do f="$(basename "$f")"; /usr/bin/systemctl start "$f"; done'
+NeedsTargets
+Depends = infra-secretary
+Depends = infra-private-key
+Depends = infra-daemon-reload
+

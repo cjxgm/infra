@@ -1,0 +1,29 @@
+[Unit]
+Description=Obtain certificate for %I
+
+[Service]
+Type=oneshot
+DynamicUser=true
+User=infra-certificate
+StateDirectory=infra/certificate
+ExecStartPre=!/usr/lib/infra/secretary/decrypt \
+    /usr/lib/infra/certificate/secret-credential.conf \
+    /tmp/credential.conf
+ExecStart=/usr/bin/bash -c ' \
+    source /tmp/credential.conf && \
+    /usr/bin/certbot \
+        --config-dir /var/lib/infra/certificate \
+        --logs-dir /tmp \
+        --work-dir /tmp \
+        certonly -d %I \
+        --dns-cloudflare \
+        --dns-cloudflare-credentials /tmp/credential.conf \
+        --keep-until-expiring \
+        --non-interactive \
+        --agree-tos \
+        --email "$$dns_cloudflare_email" \
+'
+ExecStartPost=/usr/bin/chmod o=rX -R /var/lib/infra/certificate
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+
