@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-umask 077
 mkdir -p "$1/infra-internet.socket.d"
 exec /usr/lib/infra/secretary/decrypt \
     /usr/lib/infra/internet/secret-address.conf \
