@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+mkdir -p "$1/infra-internet.socket.d"
+exec /usr/lib/infra/secretary/decrypt \
+    /usr/lib/infra/internet/secret-address.conf \
+    "$1/infra-internet.socket.d/address.conf"
+

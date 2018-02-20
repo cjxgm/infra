@@ -22,3 +22,13 @@ _systemd__enable_unit()
     ln -s "/usr/lib/systemd/system/infra-$unit" "$pkgdir/usr/lib/systemd/system/$target.wants/infra-$unit"
 }
 
+# USAGE: _systemd__install_generator name
+#   Install a systemd generator to infra-${name}
+_systemd__install_generator()
+{
+    local gen="$1"
+    [[ -z $gen ]] && return 1
+
+    install -D "$srcdir/$gen" "$pkgdir/usr/lib/systemd/system-generators/infra-$gen"
+}
+

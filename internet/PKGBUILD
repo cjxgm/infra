@@ -1,7 +1,7 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-internet
-pkgver=0.6.0
+pkgver=0.7.0
 pkgrel=1
 pkgdesc="Provide access to THE internet."
 arch=(any)
@@ -15,13 +15,17 @@ depends=(
 )
 source=(
     secret-password.json
+    secret-address.conf
     internet-service.service
     internet.service
     internet.socket
     restart-internet.hook
     stop-internet.hook
+    internet-decrypt-address
 )
 sha512sums=(
+    SKIP
+    SKIP
     SKIP
     SKIP
     SKIP
@@ -32,13 +36,17 @@ sha512sums=(
 
 package()
 {
-    install -Dm 644 "$srcdir/secret-password.json" "$pkgdir/usr/lib/infra/internet/secret-password.json"
+    install -Dm 644 "$srcdir/secret-password.json" \
+        "$pkgdir/usr/lib/infra/internet/secret-password.json"
+    install -Dm 644 "$srcdir/secret-address.conf" \
+        "$pkgdir/usr/lib/infra/internet/secret-address.conf"
 
     source /source/scripts/pkgbuild/systemd.sh
     _systemd__install_unit internet-service.service
     _systemd__install_unit internet.service
     _systemd__install_unit internet.socket
     _systemd__enable_unit internet.socket sockets.target
+    _systemd__install_generator internet-decrypt-address
 
     source /source/scripts/pkgbuild/pacman.sh
     _pacman__install_hook restart-internet.hook

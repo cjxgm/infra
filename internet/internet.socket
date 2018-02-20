@@ -2,7 +2,6 @@
 Description=Socket for THE internet service provider
 
 [Socket]
-ListenStream=[removed]
 TCPCongestion=bbr
 
 [Install]
