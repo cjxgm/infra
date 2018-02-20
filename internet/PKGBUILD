@@ -2,7 +2,7 @@
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-internet
 pkgver=0.3.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Provide access to THE internet."
 arch=(any)
 license=('GPL3')
@@ -24,10 +24,11 @@ sha512sums=(
 package()
 {
     install -Dm 644 "$srcdir/secret-password.json" "$pkgdir/usr/lib/infra/internet/secret-password.json"
-    install -Dm 644 "$srcdir/internet-service.service" "$pkgdir/usr/lib/systemd/system/infra-internet-service.service"
-    install -Dm 644 "$srcdir/internet.service" "$pkgdir/usr/lib/systemd/system/infra-internet.service"
-    install -Dm 644 "$srcdir/internet.socket" "$pkgdir/usr/lib/systemd/system/infra-internet.socket"
-    install -d "$pkgdir/usr/lib/systemd/system/sockets.target.wants"
-    ln -s "/usr/lib/systemd/system/infra-internet.socket" "$pkgdir/usr/lib/systemd/system/sockets.target.wants/"
+
+    source /source/scripts/pkgbuild/systemd.sh
+    _systemd__install_unit internet-service.service
+    _systemd__install_unit internet.service
+    _systemd__install_unit internet.socket
+    _systemd__enable_unit internet.socket sockets.target
 }
 
