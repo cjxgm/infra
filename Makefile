@@ -38,8 +38,8 @@ secret.pem:
 	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 > $@
 
 build/repo/infra.db.tar.xz: $(PKGBUILDs) | build/repo/
-	rm -f $@
 	$(MAKE) $(_dirty_makepkg_targets)
+	rm -f $@
 	repo-add $@ $(packages)
 
 makepkg-%: %/PKGBUILD | build/repo/ build/downloads/ build/cache/
