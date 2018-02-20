@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 # USAGE: decrypt INPUT OUTPUT
-/usr/lib/infra/secretary/crypt /usr/lib/infra/secretary/secret.{pem,key} -d -in "$1" -out "$2"
+exec /usr/lib/infra/secretary/crypt /usr/lib/infra/secretary/secret.{pem,key} -d -in "$1" -out "$2"
 
