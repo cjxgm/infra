@@ -7,9 +7,6 @@ Target = usr/lib/systemd/system/timers.target.wants/infra-certificate@*.timer
 [Action]
 Description = Obtaining certificates from letsencrypt...
 When = PostTransaction
-Exec = /usr/bin/bash -c 'while read -r f; do f="$(basename "$f" .timer).service"; /usr/bin/systemctl start "$f"; done'
+Exec = /usr/bin/bash -c '/usr/bin/systemctl daemon-reload && { while read -r f; do f="$(basename "$f" .timer).service"; /usr/bin/systemctl start "$f"; done; }'
 NeedsTargets
-Depends = infra-secretary
-Depends = infra-private-key
-Depends = infra-daemon-reload
 

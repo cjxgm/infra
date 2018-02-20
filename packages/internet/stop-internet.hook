@@ -7,5 +7,4 @@ Target = infra-internet
 Description = Stopping socket for THE internet access provider...
 When = PreTransaction
 Exec = /usr/bin/systemctl stop infra-internet.socket
-Depends = systemd
 
