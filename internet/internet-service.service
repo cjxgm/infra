@@ -1,5 +1,8 @@
 [Unit]
 Description=THE internet service provider
+RefuseManualStart=true
+RefuseManualStop=true
+BindsTo=infra-internet.service
 
 [Service]
 DynamicUser=true
