@@ -1,9 +1,9 @@
 _package_names_from_PKGBUILD = $(shell cd $(dir $(PKGBUILD)) && env EUID=1 makepkg --packagelist)
-_makepkg_target_from_PKGBUILD = makepkg-$(PKGBUILD:/PKGBUILD=)
+_makepkg_target_from_PKGBUILD = makepkg-$(PKGBUILD:packages/%/PKGBUILD=%)
 _package_path_from_name = build/repo/$(name).pkg.tar.xz
 _dirty_makepkg_targets = $(foreach PKGBUILD,$?,$(_makepkg_target_from_PKGBUILD))
 
-PKGBUILDs := $(wildcard */PKGBUILD)
+PKGBUILDs := $(wildcard packages/*/PKGBUILD)
 package_names := $(foreach PKGBUILD,$(PKGBUILDs),$(_package_names_from_PKGBUILD))
 packages := $(foreach name,$(package_names),$(_package_path_from_name))
 
@@ -42,7 +42,7 @@ build/repo/infra.db.tar.xz: $(PKGBUILDs) | build/repo/
 	rm -f $@
 	repo-add $@ $(packages)
 
-makepkg-%: %/PKGBUILD | build/repo/ build/downloads/ build/cache/
+makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 	systemd-run \
 		--collect \
 		--pipe \
@@ -54,7 +54,7 @@ makepkg-%: %/PKGBUILD | build/repo/ build/downloads/ build/cache/
 		-p ProtectControlGroups=1 \
 		-p BindPaths=$(build_path):/build \
 		-p BindReadOnlyPaths=$(abspath .):/source \
-		-p WorkingDirectory=/source/$* \
+		-p WorkingDirectory=/source/packages/$* \
 		-E PKGDEST=/build/repo \
 		-E SRCDEST=/build/downloads \
 		-E BUILDDIR=/tmp \
