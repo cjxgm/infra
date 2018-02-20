@@ -8,5 +8,5 @@ Target = infra-internet
 Description = Restarting socket for THE internet access provider...
 When = PostTransaction
 Exec = /usr/bin/systemctl restart infra-internet.socket
-Depends = infra-optimization
+Depends = infra-daemon-reload
 

@@ -1,0 +1,23 @@
+# vim: ts=4 sw=4 sts=4 et
+# Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
+pkgname=infra-daemon-reload
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="A pacman hook to systemctl daemon-reload"
+arch=(any)
+license=('GPL3')
+groups=(infra)
+depends=()
+source=(
+    daemon-reload.hook
+)
+sha512sums=(
+    SKIP
+)
+
+package()
+{
+    source /source/scripts/pkgbuild/pacman.sh
+    _pacman__install_hook daemon-reload.hook
+}
+
