@@ -1,0 +1,14 @@
+[Unit]
+Description=Socket service for the HTTPS gateway
+Requires=infra-gateway.socket
+Requires=infra-gateway-service.service
+After=infra-gateway-service.service
+JoinsNamespaceOf=infra-gateway-service.service
+
+[Service]
+DynamicUser=true
+PrivateNetwork=true
+ExecStart=/usr/lib/systemd/systemd-socket-proxyd /tmp/nginx.sock
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+

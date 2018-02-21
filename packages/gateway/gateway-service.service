@@ -1,0 +1,24 @@
+[Unit]
+Description=The HTTPS gateway
+RefuseManualStart=true
+RefuseManualStop=true
+BindsTo=infra-gateway.service
+AssertPathIsDirectory=/var/lib/private/infra/certificate
+
+[Service]
+Type=forking
+SyslogLevel=err
+
+DynamicUser=true
+User=infra-gateway
+PrivateDevices=true
+CacheDirectory=infra/gateway/nginx
+BindPaths=/var/cache/private/infra/gateway/nginx:/var/lib/nginx
+BindReadOnlyPaths=/var/lib/private/infra/certificate:/tmp/certificate
+
+ExecStart=/usr/bin/nginx -c /usr/lib/infra/gateway/nginx.conf
+KillMode=mixed
+KillSignal=SIGQUIT
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+
