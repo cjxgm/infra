@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = *
+
+[Action]
+Description = Removing cached packages older than 3 versions...
+When = PostTransaction
+Exec = /usr/bin/paccache -rk3
+

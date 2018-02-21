@@ -1,7 +1,7 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-optimization
-pkgver=0.3.0
+pkgver=0.4.0
 pkgrel=1
 pkgdesc="System optimization configurations"
 arch=(any)
@@ -10,18 +10,25 @@ groups=(infra)
 depends=()
 source=(
     bbr.conf
+    remove-cached-packages.hook
 )
 sha512sums=(
+    SKIP
     SKIP
 )
 
 package()
 {
+    source /source/scripts/pkgbuild/pacman.sh
+
     #-- Feature: Set TCP congestion control to BBR
     #   BBR offers substantially higher throughput for bottlenecks
     #   with shallow buffers or random losses, and substantially
     #   lower queueing delays for bottlenecks with deep buffers
     #   (avoiding "bufferbloat").
     install -Dm 644 "$srcdir/bbr.conf" "$pkgdir/usr/lib/sysctl.d/99-infra-bbr.conf"
+
+    #-- Feature: Remove cached pacman packages older than 3 versions
+    _pacman__install_hook remove-cached-packages.hook
 }
 
