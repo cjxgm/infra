@@ -1,7 +1,7 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-certificate
-pkgver=0.2.0
+pkgver=0.3.0
 pkgrel=1
 pkgdesc="Obtain certificates from letsencrypt and renew them twice a day."
 arch=(any)
@@ -18,13 +18,9 @@ source=(
     remove-certificate@.service
     certificate@.service
     certificate@.timer
-    certificate.hook
     remove-certificate.hook
-    restart-certificate-timer.hook
 )
 sha512sums=(
-    SKIP
-    SKIP
     SKIP
     SKIP
     SKIP
@@ -45,12 +41,13 @@ package()
     _systemd__install_unit certificate@.service
     _systemd__install_unit certificate@.timer
     for cert in "${_certificates[@]}"; do
-        _systemd__enable_unit certificate@$(systemd-escape "$cert").timer timers.target
+        local instance="$(systemd-escape "$cert")"
+        _systemd__enable_unit "certificate@$instance.timer" timers.target
+        _systemd__manage_lifetime "certificate@$instance.timer"
+        _systemd__manage_lifetime "certificate@$instance.service"
     done
 
     source /source/scripts/pkgbuild/pacman.sh
-    _pacman__install_hook certificate.hook
     _pacman__install_hook remove-certificate.hook
-    _pacman__install_hook restart-certificate-timer.hook
 }
 

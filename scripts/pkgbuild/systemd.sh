@@ -46,3 +46,19 @@ _systemd__install_generator()
     install -D "$srcdir/$gen" "$pkgdir/usr/lib/systemd/system-generators/infra-$gen"
 }
 
+# USAGE: _systemd__manage_lifetime unit
+#   Let infra-reaper manage the restarting and stopping of infra-${unit}
+_systemd__manage_lifetime()
+{
+    local unit="$1"
+    [[ -z $unit ]] && return 1
+
+    # A hacky way to say:
+    # if (not depends.contains("infra-reaper")
+    #     depends.push("infra-reaper");
+    [[ " ${depends[@]} " == *' infra-reaper '* ]] || depends+=(infra-reaper)
+
+    install -d "$pkgdir/usr/lib/infra/reaper.d"
+    ln -s /dev/null "$pkgdir/usr/lib/infra/reaper.d/infra-$unit"
+}
+
