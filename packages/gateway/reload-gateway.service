@@ -1,0 +1,11 @@
+[Unit]
+Description=Reload the HTTPS gateway
+RefuseManualStart=true
+RefuseManualStop=true
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl try-reload-or-restart infra-gateway-service.service
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+

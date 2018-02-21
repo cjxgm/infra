@@ -17,6 +17,7 @@ BindPaths=/var/cache/private/infra/gateway/nginx:/var/lib/nginx
 BindReadOnlyPaths=/var/lib/private/infra/certificate:/tmp/certificate
 
 ExecStart=/usr/bin/nginx -c /usr/lib/infra/gateway/nginx.conf
+ExecReload=/usr/bin/nginx -c /usr/lib/infra/gateway/nginx.conf -s reload
 KillMode=mixed
 KillSignal=SIGQUIT
 
