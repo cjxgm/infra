@@ -2,7 +2,7 @@
 Type = File
 Operation = Install
 Operation = Upgrade
-Target = usr/lib/infra/reaper.d/*
+Target = usr/lib/infra/reaper.d/?*
 
 [Action]
 Description = Restarting designated services...

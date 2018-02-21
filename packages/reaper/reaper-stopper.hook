@@ -1,7 +1,7 @@
 [Trigger]
 Type = File
 Operation = Remove
-Target = usr/lib/infra/reaper.d/*
+Target = usr/lib/infra/reaper.d/?*
 
 [Action]
 Description = Stopping designated services...
