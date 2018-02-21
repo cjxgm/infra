@@ -1,0 +1,12 @@
+[Trigger]
+Type = File
+Operation = Install
+Operation = Upgrade
+Target = usr/lib/infra/reaper.d/*
+
+[Action]
+Description = Restarting designated services...
+When = PostTransaction
+Exec = /usr/bin/bash -c '/usr/bin/systemctl daemon-reload && { while read -r f; do f="$(basename "$f")"; echo "  Restarting $f..."; /usr/bin/systemctl restart "$f"; done; }'
+NeedsTargets
+

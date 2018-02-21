@@ -1,0 +1,11 @@
+[Trigger]
+Type = File
+Operation = Remove
+Target = usr/lib/infra/reaper.d/*
+
+[Action]
+Description = Stopping designated services...
+When = PostTransaction
+Exec = /usr/bin/bash -c '/usr/bin/systemctl daemon-reload && { while read -r f; do f="$(basename "$f")"; echo "  Stopping $f..."; /usr/bin/systemctl stop "$f"; done; }'
+NeedsTargets
+
