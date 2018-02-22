@@ -22,7 +22,7 @@ before_install:
     - docker exec $(</tmp/container) busctl --watch-bind=1
 
 script:
-    - docker exec $(</tmp/container) make -j8 -C /source
+    - docker exec -e PACKAGER $(</tmp/container) make -j8 -C /source
 
 before_deploy:
     - git config credential.username $GITHUB_API_TOKEN
@@ -41,4 +41,5 @@ deploy:
 env:
     global:
         - secure: IK+/puertz4nOhQgMihSys7AngdZy+fFhicdLLegy+sosIGC75KrKjK8YynUsrDeHbIegMpjA0iMRouaXkeV24jtz5uyvGhmqMDhdxE3I5MR+T3QerxdfHIJlt/41WPpC9EUf55YM0iY3N9E8E7v0mo+K/MZLEBkpkcaHJVRJXpxgY88yM23xQsKlj1yzWvuBajCKuG+4eEJgYv7+X7fCT0eP0W5lCmfMXnrDxr5/hGHxva1oITVqAfM8eHqbd7wXpyowPna6ty2uQ+4YWockwh2rKEHFbB753H+WAaOGI39at1qP7TXz3YSlz76xKtK2QKE25IYlYzPk0mP3wxp8+12t/qELPBBRnLgD158BnbF3RLvUF5HC5e9aBr8fpJjkO5/xoOBPdaNDYE3/BPxqpdggQwLpLrFaoorJaR4SoI2xzSOkRmcC9N3qYuZVwqsWqKmocWYzvNh0lk/WhVQYyHsWMRK8CRBjoNYDlOdql2wpPmJa7cw08w3+AUWDn5IaC26KCNr+Q4kbbI+Um+ycRW9ZvvLavFfrBJuroSemew7wYZc4GXpYKV0YQs6feht+akMDLSuMJo/VqNUhFeZRc1vrTLx3QdTkGRjZOEzUmKevKhg+/ZYA+IUc50ibAEiSorpbOp9qcTyo13KuJ/RaVgEgS0Z9pFCJ3HVqalT/EY=
+        - PACKAGER="Travis CI <https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID>"
 

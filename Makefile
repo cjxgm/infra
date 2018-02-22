@@ -58,6 +58,7 @@ makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 		-E PKGDEST=/build/repo \
 		-E SRCDEST=/build/downloads \
 		-E BUILDDIR=/tmp \
+		-E PACKAGER="$(PACKAGER)" \
 		-- \
 		makepkg --nodeps --force
 
