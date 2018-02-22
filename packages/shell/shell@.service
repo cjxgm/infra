@@ -1,0 +1,17 @@
+[Unit]
+Description=Secure shell connection for %I
+After=sshdgenkeys.service
+RefuseManualStart=true
+# Old connections should be kept open, thus
+# do NOT BindsTo=infra-shell.socket
+
+[Service]
+PrivateTmp=yes
+PrivateDevices=yes
+ExecStart=-/usr/bin/sshd -i -f /usr/lib/infra/shell/sshd_config
+StandardInput=socket
+StandardError=syslog
+KillMode=process
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+

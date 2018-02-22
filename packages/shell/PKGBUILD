@@ -1,0 +1,52 @@
+# vim: ts=4 sw=4 sts=4 et
+# Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
+pkgname=infra-shell
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Secure shell (SSH) server configuration"
+arch=(any)
+license=('GPL3')
+groups=(infra)
+depends=(
+    openssh
+)
+source=(
+    secret-address.conf
+    shell.socket
+    shell@.service
+    sshd_config
+    shell-decrypt-address
+    authorized_keys
+    authorized_keys-cjxgm
+)
+sha512sums=(
+    SKIP
+    SKIP
+    SKIP
+    SKIP
+    SKIP
+    SKIP
+    SKIP
+)
+
+package()
+{
+    install -Dm 644 "$srcdir/secret-address.conf" \
+        "$pkgdir/usr/lib/infra/shell/secret-address.conf"
+
+    install -Dm 644 "$srcdir/authorized_keys" \
+        "$pkgdir/usr/lib/infra/shell/authorized_keys"
+    install -Dm 644 "$srcdir/authorized_keys-cjxgm" \
+        "$pkgdir/usr/lib/infra/shell/authorized_keys.d/cjxgm"
+
+    install -Dm 644 "$srcdir/sshd_config" \
+        "$pkgdir/usr/lib/infra/shell/sshd_config"
+
+    source /source/scripts/pkgbuild/systemd.sh
+    _systemd__install_unit shell.socket
+    _systemd__install_unit shell@.service
+    _systemd__enable_unit shell.socket sockets.target
+    _systemd__install_generator shell-decrypt-address
+    _systemd__manage_lifetime shell.socket
+}
+

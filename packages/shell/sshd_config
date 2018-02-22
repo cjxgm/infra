@@ -1,0 +1,30 @@
+# sshd_config v1.100 2016/08/15 12:32:04 naddy
+# This sshd was compiled with PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+LoginGraceTime 30s
+PermitRootLogin prohibit-password
+MaxSessions 2
+
+AuthorizedKeysFile /usr/lib/infra/shell/authorized_keys /usr/lib/infra/shell/authorized_keys.d/%u .ssh/authorized_keys
+
+PasswordAuthentication yes
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+UsePAM yes
+
+AllowAgentForwarding yes
+AllowTcpForwarding yes
+X11Forwarding yes
+GatewayPorts yes
+PermitTunnel yes
+PermitTTY yes
+
+PrintMotd no        # pam does that
+TCPKeepAlive yes
+ClientAliveInterval 10
+ClientAliveCountMax 3
+PidFile none
+
+# Allow sftp (disabled by default)
+Subsystem   sftp    /usr/lib/ssh/sftp-server
+
