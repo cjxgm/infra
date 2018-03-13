@@ -2,7 +2,7 @@
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-private-key
 pkgver=0.1.0
-pkgrel=1
+pkgrel=2
 pkgdesc="A private key to decrypt the decryption key of infra-secretary"
 arch=(any)
 license=('unknown')

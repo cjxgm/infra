@@ -2,7 +2,7 @@
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-reaper
 pkgver=0.2.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Pacman hooks to restart services on install and to stop them on removal."
 arch=(any)
 license=('GPL3')

@@ -59,6 +59,7 @@ makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 		-p ProtectControlGroups=1 \
 		-p BindPaths=$(build_path):/build \
 		-p BindReadOnlyPaths=$(abspath .):/source \
+		-p InaccessiblePaths=/var/lib/pacman \
 		-p WorkingDirectory=/source/packages/$* \
 		-E PKGDEST=/build/repo \
 		-E SRCDEST=/build/downloads \

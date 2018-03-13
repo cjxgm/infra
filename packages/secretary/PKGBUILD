@@ -2,7 +2,7 @@
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-secretary
 pkgver=0.2.0
-pkgrel=1
+pkgrel=2
 pkgdesc="Secret manager with a decryption key"
 arch=(any)
 license=('GPL3')
