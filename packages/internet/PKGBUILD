@@ -2,7 +2,7 @@
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-internet
 pkgver=0.11.0
-pkgrel=2
+pkgrel=3
 pkgdesc="Provide access to THE internet."
 arch=(any)
 license=('GPL3')

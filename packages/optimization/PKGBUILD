@@ -2,7 +2,7 @@
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-optimization
 pkgver=0.4.0
-pkgrel=2
+pkgrel=3
 pkgdesc="System optimization configurations"
 arch=(any)
 license=('GPL3')

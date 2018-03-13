@@ -3,13 +3,16 @@ _makepkg_target_from_PKGBUILD = makepkg-$(PKGBUILD:packages/%/PKGBUILD=%)
 _bump_pkgrel_target_from_PKGBUILD = bump-pkgrel-$(PKGBUILD:packages/%/PKGBUILD=%)
 _package_path_from_name = build/repo/$(name).pkg.tar.xz
 _dirty_makepkg_targets = $(foreach PKGBUILD,$?,$(_makepkg_target_from_PKGBUILD))
+_dirty_makepkg_targets_exclude_private_key = $(filter-out makepkg-private-key,$(_dirty_makepkg_targets))
 
 PKGBUILDs := $(wildcard packages/*/PKGBUILD)
 package_names := $(foreach PKGBUILD,$(PKGBUILDs),$(_package_names_from_PKGBUILD))
-packages := $(foreach name,$(package_names),$(_package_path_from_name))
+package_names_exclude_private_key := $(filter-out infra-private-key-%,$(package_names))
+packages_exclude_private_key := $(foreach name,$(package_names_exclude_private_key),$(_package_path_from_name))
 
 makepkg_targets := $(foreach PKGBUILD,$(PKGBUILDs),$(_makepkg_target_from_PKGBUILD))
 bump_pkgrel_targets := $(foreach PKGBUILD,$(PKGBUILDs),$(_bump_pkgrel_target_from_PKGBUILD))
+bump_pkgrel_targets_exclude_private_key := $(filter-out bump-pkgrel-private-key,$(bump_pkgrel_targets))
 build_path := $(abspath build)
 
 MAKEFLAGS += --no-print-directory
@@ -40,12 +43,12 @@ secret.pem:
 	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 > $@
 
 .PHONY: bump-pkgrel
-bump-pkgrel: $(bump_pkgrel_targets)
+bump-pkgrel: $(bump_pkgrel_targets_exclude_private_key)
 
 build/repo/infra.db.tar.xz: $(PKGBUILDs) | build/repo/
-	$(MAKE) $(_dirty_makepkg_targets)
+	$(MAKE) $(_dirty_makepkg_targets_exclude_private_key)
 	rm -f $@
-	repo-add $@ $(packages)
+	repo-add $@ $(packages_exclude_private_key)
 
 makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 	systemd-run \
