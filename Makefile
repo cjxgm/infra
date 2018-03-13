@@ -1,5 +1,6 @@
 _package_names_from_PKGBUILD = $(shell cd $(dir $(PKGBUILD)) && env EUID=1 makepkg --packagelist)
 _makepkg_target_from_PKGBUILD = makepkg-$(PKGBUILD:packages/%/PKGBUILD=%)
+_bump_pkgrel_target_from_PKGBUILD = bump-pkgrel-$(PKGBUILD:packages/%/PKGBUILD=%)
 _package_path_from_name = build/repo/$(name).pkg.tar.xz
 _dirty_makepkg_targets = $(foreach PKGBUILD,$?,$(_makepkg_target_from_PKGBUILD))
 
@@ -8,6 +9,7 @@ package_names := $(foreach PKGBUILD,$(PKGBUILDs),$(_package_names_from_PKGBUILD)
 packages := $(foreach name,$(package_names),$(_package_path_from_name))
 
 makepkg_targets := $(foreach PKGBUILD,$(PKGBUILDs),$(_makepkg_target_from_PKGBUILD))
+bump_pkgrel_targets := $(foreach PKGBUILD,$(PKGBUILDs),$(_bump_pkgrel_target_from_PKGBUILD))
 build_path := $(abspath build)
 
 MAKEFLAGS += --no-print-directory
@@ -37,6 +39,9 @@ update-key: secret.pem
 secret.pem:
 	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 > $@
 
+.PHONY: bump-pkgrel
+bump-pkgrel: $(bump_pkgrel_targets)
+
 build/repo/infra.db.tar.xz: $(PKGBUILDs) | build/repo/
 	$(MAKE) $(_dirty_makepkg_targets)
 	rm -f $@
@@ -61,6 +66,9 @@ makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 		-E PACKAGER="$(PACKAGER)" \
 		-- \
 		makepkg --nodeps --force
+
+bump-pkgrel-%:
+	perl -pe 's{\bpkgrel=\K(\d+)}{$$&+1}e' -i "packages/$*/PKGBUILD"
 
 .PRECIOUS: build/ build/%/
 build/:
