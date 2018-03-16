@@ -1,8 +1,8 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-private-key
-pkgver=0.1.0
-pkgrel=2
+pkgver=0.2.0
+pkgrel=1
 pkgdesc="A private key to decrypt the decryption key of infra-secretary"
 arch=(any)
 license=('unknown')
@@ -17,6 +17,9 @@ package()
 {
     if [[ -r "/source/secret.pem" ]]; then
         install -Dm 600 "/source/secret.pem" "$pkgdir/usr/lib/infra/secretary/secret.pem"
+    else
+        error "Secret key unreadable: secret.pem"
+        return 1
     fi
 }
 
