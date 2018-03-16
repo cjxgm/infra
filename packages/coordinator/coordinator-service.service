@@ -1,0 +1,23 @@
+[Unit]
+Description=Reverse proxy to various services
+RefuseManualStart=true
+RefuseManualStop=true
+BindsTo=infra-coordinator.service
+
+[Service]
+Type=forking
+SyslogLevel=err
+
+DynamicUser=true
+User=infra-coordinator
+PrivateDevices=true
+CacheDirectory=infra/coordinator/nginx
+BindPaths=/var/cache/private/infra/coordinator/nginx:/var/lib/nginx
+
+ExecStart=/usr/bin/nginx -c /usr/lib/infra/coordinator/nginx.conf
+ExecReload=/usr/bin/nginx -c /usr/lib/infra/coordinator/nginx.conf -s reload
+KillMode=mixed
+KillSignal=SIGQUIT
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+

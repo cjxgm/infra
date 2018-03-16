@@ -1,0 +1,38 @@
+# vim: ts=4 sw=4 sts=4 et
+# Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
+pkgname=infra-coordinator
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Reverse proxy to various services"
+arch=(any)
+license=('GPL3')
+groups=(infra)
+depends=(
+    nginx
+)
+source=(
+    nginx.conf
+    coordinator-service.service
+    coordinator.service
+    coordinator.socket
+)
+sha512sums=(
+    SKIP
+    SKIP
+    SKIP
+    SKIP
+)
+
+package()
+{
+    install -Dm 644 "$srcdir/nginx.conf" \
+        "$pkgdir/usr/lib/infra/coordinator/nginx.conf"
+
+    source /source/scripts/pkgbuild/systemd.sh
+    _systemd__install_unit coordinator-service.service
+    _systemd__install_unit coordinator.service
+    _systemd__install_unit coordinator.socket
+    _systemd__enable_unit coordinator.socket sockets.target
+    _systemd__manage_lifetime coordinator.socket
+}
+

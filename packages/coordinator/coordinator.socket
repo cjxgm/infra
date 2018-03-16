@@ -1,0 +1,11 @@
+[Unit]
+Description=Socket for reverse proxy to various services
+
+[Socket]
+ListenStream=/run/infra/coordinator/socket
+
+[Install]
+WantedBy=sockets.target
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+
