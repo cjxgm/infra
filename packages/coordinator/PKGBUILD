@@ -1,7 +1,7 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-coordinator
-pkgver=0.4.0
+pkgver=0.5.0
 pkgrel=1
 pkgdesc="Reverse proxy to various services"
 arch=(any)
