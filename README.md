@@ -25,7 +25,19 @@ at [cjprods.org].
 
 [Stateless System]: http://0pointer.net/blog/projects/stateless.html
 
+## Setup pacman for local access
+
+```
+# /etc/pacman.conf
+[infra]
+SigLevel = Optional TrustAll
+Server = https://cjprods.org/infra-repo
+```
+
 ## Setup a new server
+
+### Setup pacman for packages
+
 ```
 # /etc/pacman.conf
 [infra]
@@ -33,14 +45,21 @@ SigLevel = Optional TrustAll
 Server = https://github.com/cjxgm/infra/releases/download/latest
 ```
 
-Upload and install the private key package manually.
+### Prepare private key
 
-> **NOTE**: the `infra-private-key` from the GitHub Release repo is empty.
+Put the private key as `secret.pem`, then package the private key:
+
+```
+make makepkg-private-key
+```
+
+Upload and install the private key package `build/repo/infra-private-key-*.pkg.tar.xz` manually.
 
 Now, `pacman -Syu`, then install any wanted packages.
 All packages provided by this repo has a prefix of `infra-`.
 
 ## Setup git for accessing secrets
+
 - Put the private key in `secret.pem`.
 - Run `make setup`.
 - After editing `secret-*` files, it's better (for now) to
@@ -48,6 +67,7 @@ All packages provided by this repo has a prefix of `infra-`.
   so that rebasing won't conflict that much.
 
 ## About various keys
+
 - The private key is used for encrypting the decryption key.
 - The encrypted decryption key is `secret.key`.
 - The decryption key (with the private key) is used to decrypting secrets.
