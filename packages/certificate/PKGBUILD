@@ -2,14 +2,13 @@
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-certificate
 pkgver=0.3.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Obtain certificates from letsencrypt and renew them twice a day."
 arch=(any)
 license=('GPL3')
 groups=(infra)
 depends=(
     infra-secretary
-    infra-private-key
     certbot
     certbot-dns-cloudflare
 )

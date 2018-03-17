@@ -2,12 +2,13 @@
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-shell
 pkgver=0.1.0
-pkgrel=3
+pkgrel=4
 pkgdesc="Secure shell (SSH) server configuration"
 arch=(any)
 license=('GPL3')
 groups=(infra)
 depends=(
+    infra-secretary
     openssh
 )
 source=(
