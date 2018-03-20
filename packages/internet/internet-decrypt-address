@@ -1,6 +1,10 @@
 #!/usr/bin/bash
 mkdir -p "$1/infra-internet.socket.d"
-exec /usr/lib/infra/secretary/decrypt \
-    /usr/lib/infra/internet/secret-address.conf \
+/usr/lib/infra/secretary/decrypt \
+    /usr/lib/infra/internet/secret-address.json \
     "$1/infra-internet.socket.d/address.conf"
+PORT="$(/usr/bin/jq .server_port "$1/infra-internet.socket.d/address.conf")"
+exec > "$1/infra-internet.socket.d/address.conf"
+echo "[Socket]"
+echo "ListenStream=$PORT"
 

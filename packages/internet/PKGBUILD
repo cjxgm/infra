@@ -1,8 +1,8 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-internet
-pkgver=0.11.0
-pkgrel=4
+pkgver=0.12.0
+pkgrel=1
 pkgdesc="Provide access to THE internet."
 arch=(any)
 license=('GPL3')
@@ -10,10 +10,11 @@ groups=(infra)
 depends=(
     infra-secretary
     shadowsocks-libev
+    jq
 )
 source=(
     secret-password.json
-    secret-address.conf
+    secret-address.json
     internet-service.service
     internet.service
     internet.socket
@@ -32,8 +33,8 @@ package()
 {
     install -Dm 644 "$srcdir/secret-password.json" \
         "$pkgdir/usr/lib/infra/internet/secret-password.json"
-    install -Dm 644 "$srcdir/secret-address.conf" \
-        "$pkgdir/usr/lib/infra/internet/secret-address.conf"
+    install -Dm 644 "$srcdir/secret-address.json" \
+        "$pkgdir/usr/lib/infra/internet/secret-address.json"
 
     source /source/scripts/pkgbuild/systemd.sh
     _systemd__install_unit internet-service.service
