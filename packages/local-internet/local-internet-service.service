@@ -1,0 +1,15 @@
+[Unit]
+Description=Access to THE internet service provider
+RefuseManualStart=true
+RefuseManualStop=true
+BindsTo=infra-local-internet.service
+
+[Service]
+DynamicUser=true
+ExecStartPre=!/usr/lib/infra/secretary/decrypt /usr/lib/infra/local-internet/secret-password.json /tmp/password.json
+ExecStartPre=!/usr/lib/infra/secretary/decrypt /usr/lib/infra/local-internet/secret-address.json /tmp/address.json
+ExecStartPre=/usr/bin/bash -c "/usr/bin/jq -s add /tmp/address.json /tmp/password.json > /tmp/credential.json"
+ExecStart=/usr/bin/ss-local -s cjprods.org -b 127.0.0.1 -l 60180 -t 1000 -m aes-256-cfb -c /tmp/credential.json
+
+# vim: ft=systemd ts=4 sw=4 sts=4 et
+
