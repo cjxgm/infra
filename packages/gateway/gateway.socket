@@ -4,6 +4,7 @@ Description=Socket for the HTTPS gateway
 [Socket]
 ListenStream=443
 TCPCongestion=bbr
+ReusePort=true
 
 [Install]
 WantedBy=sockets.target

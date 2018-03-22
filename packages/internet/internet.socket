@@ -3,6 +3,7 @@ Description=Socket for THE internet service provider
 
 [Socket]
 TCPCongestion=bbr
+ReusePort=true
 
 [Install]
 WantedBy=sockets.target

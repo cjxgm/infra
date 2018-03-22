@@ -1,7 +1,7 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-gateway
-pkgver=0.10.0
+pkgver=0.11.0
 pkgrel=1
 pkgdesc="Pass HTTPS requests to HTTP server infra-coordinator."
 arch=(any)

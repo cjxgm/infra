@@ -5,6 +5,7 @@ Wants=sshdgenkeys.service
 [Socket]
 Accept=yes
 TCPCongestion=bbr
+ReusePort=true
 
 [Install]
 WantedBy=sockets.target

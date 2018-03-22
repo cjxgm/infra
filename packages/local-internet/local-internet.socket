@@ -3,6 +3,7 @@ Description=Socket for accessing THE internet service provider
 
 [Socket]
 ListenStream=1081
+ReusePort=true
 
 [Install]
 WantedBy=sockets.target
