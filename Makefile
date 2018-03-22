@@ -1,16 +1,13 @@
-_package_names_from_PKGBUILD = $(shell cd $(dir $(PKGBUILD)) && env EUID=1 makepkg --packagelist)
 _makepkg_target_from_PKGBUILD = makepkg-$(PKGBUILD:packages/%/PKGBUILD=%)
+_name_target_from_PKGBUILD = build/name.d/$(PKGBUILD:packages/%/PKGBUILD=%)
 _bump_pkgrel_target_from_PKGBUILD = bump-pkgrel-$(PKGBUILD:packages/%/PKGBUILD=%)
-_package_path_from_name = build/repo/$(name).pkg.tar.xz
 _dirty_makepkg_targets = $(foreach PKGBUILD,$?,$(_makepkg_target_from_PKGBUILD))
-_dirty_makepkg_targets_exclude_private_key = $(filter-out makepkg-private-key,$(_dirty_makepkg_targets))
+_dirty_name_targets = $(foreach PKGBUILD,$?,$(_name_target_from_PKGBUILD))
+_depended_name_targets = $(foreach PKGBUILD,$^,$(_name_target_from_PKGBUILD))
 
 PKGBUILDs := $(wildcard packages/*/PKGBUILD)
-package_names := $(foreach PKGBUILD,$(PKGBUILDs),$(_package_names_from_PKGBUILD))
-package_names_exclude_private_key := $(filter-out infra-private-key-%,$(package_names))
-packages_exclude_private_key := $(foreach name,$(package_names_exclude_private_key),$(_package_path_from_name))
+PKGBUILDs_excluding_private_key := $(filter-out packages/private-key/PKGBUILD,$(PKGBUILDs))
 
-makepkg_targets := $(foreach PKGBUILD,$(PKGBUILDs),$(_makepkg_target_from_PKGBUILD))
 bump_pkgrel_targets := $(foreach PKGBUILD,$(PKGBUILDs),$(_bump_pkgrel_target_from_PKGBUILD))
 bump_pkgrel_targets_exclude_private_key := $(filter-out bump-pkgrel-private-key,$(bump_pkgrel_targets))
 build_path := $(abspath build)
@@ -45,10 +42,10 @@ secret.pem:
 .PHONY: bump-pkgrel
 bump-pkgrel: $(bump_pkgrel_targets_exclude_private_key)
 
-build/repo/infra.db.tar.xz: $(PKGBUILDs) | build/repo/
-	$(MAKE) $(_dirty_makepkg_targets_exclude_private_key)
+build/repo/infra.db.tar.xz: $(PKGBUILDs_excluding_private_key) | build/repo/
+	$(MAKE) $(_dirty_makepkg_targets) $(_dirty_name_targets)
 	rm -f $@
-	repo-add $@ $(packages_exclude_private_key)
+	repo-add $@ $$(for name in $$(cat $(_depended_name_targets)); do echo "build/repo/$$name.pkg.tar.xz"; done)
 
 makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 	systemd-run \
@@ -73,6 +70,9 @@ makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 
 bump-pkgrel-%:
 	perl -pe 's{\bpkgrel=\K(\d+)}{$$&+1}e' -i "packages/$*/PKGBUILD"
+
+build/name.d/%: packages/%/PKGBUILD | build/name.d/
+	cd $(dir $<) && env EUID=1 makepkg --packagelist > $(abspath $@)
 
 .PRECIOUS: build/ build/%/
 build/:
