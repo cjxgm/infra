@@ -1,9 +1,9 @@
 _makepkg_target_from_PKGBUILD = makepkg-$(PKGBUILD:packages/%/PKGBUILD=%)
-_name_target_from_PKGBUILD = build/name.d/$(PKGBUILD:packages/%/PKGBUILD=%)
+_metadata_target_from_PKGBUILD = build/metadata.d/$(PKGBUILD:packages/%/PKGBUILD=%)
 _bump_pkgrel_target_from_PKGBUILD = bump-pkgrel-$(PKGBUILD:packages/%/PKGBUILD=%)
 _dirty_makepkg_targets = $(foreach PKGBUILD,$?,$(_makepkg_target_from_PKGBUILD))
-_dirty_name_targets = $(foreach PKGBUILD,$?,$(_name_target_from_PKGBUILD))
-_depended_name_targets = $(foreach PKGBUILD,$^,$(_name_target_from_PKGBUILD))
+_dirty_metadata_targets = $(foreach PKGBUILD,$?,$(_metadata_target_from_PKGBUILD))
+_depended_metadata_targets = $(foreach PKGBUILD,$^,$(_metadata_target_from_PKGBUILD))
 
 PKGBUILDs := $(wildcard packages/*/PKGBUILD)
 PKGBUILDs_excluding_private_key := $(filter-out packages/private-key/PKGBUILD,$(PKGBUILDs))
@@ -43,9 +43,9 @@ secret.pem:
 bump-pkgrel: $(bump_pkgrel_targets_exclude_private_key)
 
 build/repo/infra.db.tar.xz: $(PKGBUILDs_excluding_private_key) | build/repo/
-	$(MAKE) $(_dirty_makepkg_targets) $(_dirty_name_targets)
+	$(MAKE) $(_dirty_makepkg_targets) $(_dirty_metadata_targets)
 	rm -f $@
-	repo-add $@ $$(for name in $$(cat $(_depended_name_targets)); do echo "build/repo/$$name.pkg.tar.xz"; done)
+	repo-add $@ $$(for name in $$(cat $(_depended_metadata_targets)); do echo "build/repo/$$name.pkg.tar.xz"; done)
 
 makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 	systemd-run \
@@ -71,7 +71,7 @@ makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 bump-pkgrel-%:
 	perl -pe 's{\bpkgrel=\K(\d+)}{$$&+1}e' -i "packages/$*/PKGBUILD"
 
-build/name.d/%: packages/%/PKGBUILD | build/name.d/
+build/metadata.d/%: packages/%/PKGBUILD | build/metadata.d/
 	cd $(dir $<) && env EUID=1 makepkg --packagelist > $(abspath $@)
 
 .PRECIOUS: build/ build/%/
