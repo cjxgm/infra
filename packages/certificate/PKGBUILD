@@ -1,15 +1,15 @@
 # vim: ts=4 sw=4 sts=4 et
 # Maintainer: Giumo Clanjor <cjxgm2@gmail.com>
 pkgname=infra-certificate
-pkgver=0.3.0
-pkgrel=4
+pkgver=0.4.0
+pkgrel=2
 pkgdesc="Obtain certificates from letsencrypt and renew them twice a day."
 arch=(any)
 license=('GPL3')
 groups=(infra)
 depends=(
     infra-secretary
-    certbot
+    certbot">=0.22.0"
     certbot-dns-cloudflare
 )
 source=(
@@ -27,7 +27,7 @@ sha512sums=(
     SKIP
 )
 _certificates=(
-    cjprods.org
+    "cjprods.org,*.cjprods.org"
 )
 
 package()

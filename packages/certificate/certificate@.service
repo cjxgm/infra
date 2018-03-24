@@ -12,6 +12,7 @@ ExecStartPre=!/usr/lib/infra/secretary/decrypt \
 ExecStart=/usr/bin/bash -c ' \
     source /tmp/credential.conf && \
     /usr/bin/certbot \
+        --server https://acme-v02.api.letsencrypt.org/directory \
         --config-dir /var/lib/infra/certificate \
         --logs-dir /tmp \
         --work-dir /tmp \
