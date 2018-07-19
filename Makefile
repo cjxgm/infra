@@ -45,7 +45,7 @@ bump-pkgrel: $(bump_pkgrel_targets_exclude_private_key)
 build/repo/infra.db.tar.xz: $(PKGBUILDs_excluding_private_key) | build/repo/
 	$(MAKE) $(_dirty_makepkg_targets) $(_dirty_metadata_targets)
 	rm -f $@
-	repo-add $@ $$(for name in $$(cat $(_depended_metadata_targets)); do echo "build/repo/$$name.pkg.tar.xz"; done)
+	repo-add $@ $$(for name in $$(cat $(_depended_metadata_targets)); do echo "build/repo/$$name"; done)
 
 makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 	systemd-run \
@@ -63,7 +63,7 @@ makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
 		-p WorkingDirectory=/source/packages/$* \
 		-E PKGDEST=/build/repo \
 		-E SRCDEST=/build/downloads \
-		-E BUILDDIR=/tmp \
+		-E BUILDDIR=/tmp/build \
 		-E PACKAGER="$(PACKAGER)" \
 		-- \
 		makepkg --nodeps --force
@@ -72,7 +72,7 @@ bump-pkgrel-%:
 	perl -pe 's{\bpkgrel=\K(\d+)}{$$&+1}e' -i "packages/$*/PKGBUILD"
 
 build/metadata.d/%: packages/%/PKGBUILD | build/metadata.d/
-	cd $(dir $<) && env EUID=1 makepkg --packagelist > $(abspath $@)
+	cd $(dir $<) && env EUID=1 makepkg --packagelist | perl -pe 's{.*/}{}g' > $(abspath $@)
 
 .PRECIOUS: build/ build/%/
 build/:
