@@ -21,6 +21,9 @@ before_install:
     # Wait systemd and DBus server to come up
     - docker exec $(</tmp/container) busctl --watch-bind=1
 
+install:
+    - docker exec -e PACKAGER $(</tmp/container) pacman -Syu --noconfirm bubblewrap
+
 script:
     - docker exec -e PACKAGER $(</tmp/container) make -j8 -C /source
 
