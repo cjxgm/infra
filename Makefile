@@ -10,7 +10,6 @@ PKGBUILDs_excluding_private_key := $(filter-out packages/private-key/PKGBUILD,$(
 
 bump_pkgrel_targets := $(foreach PKGBUILD,$(PKGBUILDs),$(_bump_pkgrel_target_from_PKGBUILD))
 bump_pkgrel_targets_exclude_private_key := $(filter-out bump-pkgrel-private-key,$(bump_pkgrel_targets))
-build_path := $(abspath build)
 
 MAKEFLAGS += --no-print-directory
 
@@ -48,23 +47,29 @@ build/repo/infra.db.tar.xz: $(PKGBUILDs_excluding_private_key) | build/repo/
 	repo-add $@ $$(for name in $$(cat $(_depended_metadata_targets)); do echo "build/repo/$$name"; done)
 
 makepkg-%: packages/%/PKGBUILD | build/repo/ build/downloads/ build/cache/
-	systemd-run \
-		--collect \
-		--pipe \
-		-p DynamicUser=1 \
-		-p User=nobody \
-		-p PrivateDevices=1 \
-		-p ProtectKernelTunables=1 \
-		-p ProtectKernelModules=1 \
-		-p ProtectControlGroups=1 \
-		-p BindPaths=$(build_path):/build \
-		-p BindReadOnlyPaths=$(abspath .):/source \
-		-p InaccessiblePaths=/var/lib/pacman \
-		-p WorkingDirectory=/source/packages/$* \
-		-E PKGDEST=/build/repo \
-		-E SRCDEST=/build/downloads \
-		-E BUILDDIR=/tmp/build \
-		-E PACKAGER="$(PACKAGER)" \
+	bwrap \
+		--die-with-parent \
+		--unshare-all \
+		--uid 1000 \
+		--gid 1000 \
+		--hostname infra \
+		--setenv PKGDEST /build/repo \
+		--setenv SRCDEST /build/downloads \
+		--setenv BUILDDIR /tmp/build \
+		--setenv PACKAGER "$(PACKAGER)" \
+		--ro-bind /usr /usr \
+		--ro-bind /etc/resolv.conf /etc/resolv.conf \
+		--symlink /usr/bin /bin \
+		--symlink /usr/bin /sbin \
+		--symlink /usr/lib /lib \
+		--symlink /usr/lib /lib64 \
+		--dev /dev \
+		--proc /proc \
+		--tmpfs /tmp \
+		--bind build /build \
+		--ro-bind . /source \
+		--ro-bind scripts/makepkg/makepkg.conf /etc/makepkg.conf \
+		--chdir /source/packages/$* \
 		-- \
 		makepkg --nodeps --force
 
@@ -72,7 +77,7 @@ bump-pkgrel-%:
 	perl -pe 's{\bpkgrel=\K(\d+)}{$$&+1}e' -i "packages/$*/PKGBUILD"
 
 build/metadata.d/%: packages/%/PKGBUILD | build/metadata.d/
-	cd $(dir $<) && env EUID=1 makepkg --packagelist | perl -pe 's{.*/}{}g' > $(abspath $@)
+	cd $(dir $<) && makepkg --packagelist | perl -pe 's{.*/}{}g' > $(abspath $@)
 
 .PRECIOUS: build/ build/%/
 build/:
